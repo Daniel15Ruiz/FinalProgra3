@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script type="text/javascript"  src="{{ url_for('static', filename='vis/dist/vis.js') }}"></script>
+        <title>Document</title>
+        <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap-theme.min.css" integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+    <ul class="nav nav-pills">
+        <li role="presentation" class="active"><a href="/home">Home</a></li>
+        <li role="presentation"><a href="/Inicio">Ver Diapositivas</a></li>
+        <li role="presentation"><a href="/Estructura">Ver Grafo</a></li>
+      </ul>
+    
+    </head>
+<body>
+  <input type="text" value="{{json}}" id="json" hidden>
+  <script>
+    var inputValue = document.getElementById("json").value;
+    console.log(inputValue.toString());
+   var json1 = JSON.parse(inputValue);
+   //var json1 = JSON.parse('{ "nodes": [{"Titulo": "", "Texto": "", "Fondo": "", "Imagen": "", "Primera": 0, "id": "a"}, {"Titulo": "", "Texto": "", "Fondo": "", "Imagen": "", "Primera": 0, "id": "b"}, {"Titulo": "", "Texto": "", "Fondo": "", "Imagen": "", "Primera": 0, "id": "c"}], "links": [{"source": "a", "target": "b"}, {"source": "b", "target": "c"}]}');
+    
+   //var data = JSON.parse(json1);
+    console.log(json1.links[0]);
+    var cantiedges= json1.links.length;  
+    var cantinodes= json1.nodes.length;
+    var nodes = [];
+    var edges = [];
+    var network = null;
+    var DIR = "../static/";
+    console.log(cantiedges);
+    console.log(cantinodes);  
+    for(j=0;j<cantinodes;j++){
+        //console.log(json1.nodes[j].name); 
+        nodes=nodes.concat({ id: json1.nodes[j].id,label: json1.nodes[j].id, shape: "circle", image: ""},);
+    }
+    for (i=0;i<cantiedges;i++) { 
+        console.log(json1.links[i].source)
+        console.log(json1.links[i].target)
+        edges=edges.concat({ from: json1.links[i].source , to: json1.links[i].target},);
+    }
+    
+    
+    function draw() {
+      var DIR = "../static/Fondos/";
+      /*nodes = [
+        { id: 1, shape: "image", image: DIR + "Fondo_1.jpg" },
+        { id: 2, shape: "image", image: DIR + "Fondo_1.jpg" },
+        { id: 3, shape: "image", image: DIR + "Fondo_1.jpg" },
+        {
+          id: 4,
+          shape: "image",
+          image: DIR + "Fondo_1.jpg",
+          label: "pictures by this guy!",
+        },
+        { id: 5, shape: "image", image: DIR + "Fondo_1.jpg" },
+        { id: 6, shape: "image", image: DIR + "Fondo_1.jpg" },
+        { id: 7, shape: "image", image: DIR + "Fondo_1.jpg" },
+        { id: 8, shape: "image", image: DIR + "Fondo_1.jpg" },
+        { id: 9, shape: "image", image: DIR + "Fondo_1.jpg" },
+        { id: 10, shape: "image", image: DIR + "Fondo_1.jpg" },
+        { id: 11, shape: "image", image: DIR + "Fondo_1.jpg" },
+        { id: 12, shape: "image", image: DIR + "Fondo_1.jpg" },
+        { id: 13, shape: "image", image: DIR + "Fondo_1.jpg" },
+        { id: 14, shape: "image", image: DIR + "Fondo_1.jpg" }
+
+      ];*/
+    
+      // create connections between people
+      // value corresponds with the amount of contact between two people
+     /* edges = [
+        { from: 1, to: 2 },
+        { from: 2, to: 3 },
+        { from: 2, to: 4 },
+        { from: 4, to: 5 },
+        { from: 4, to: 10 },
+        { from: 4, to: 6 },
+        { from: 6, to: 7 },
+        { from: 7, to: 8 },
+        { from: 8, to: 9 },
+        { from: 8, to: 10 },
+        { from: 10, to: 11 },
+        { from: 11, to: 12 },
+        { from: 12, to: 13 },
+        { from: 13, to: 14 },
+        { from: 9, to: 16 }
+      ];*/
+    
+      // create a network
+      var container = document.getElementById("mynetwork");
+      var data = {
+        nodes: nodes,
+        edges: edges,
+      };
+      var options = {
+        nodes: {
+          borderWidth: 4,
+          size: 30,
+          color: {
+            border: "#90cc00",
+            background: "#c6ff00",
+          },
+          font: { color: "#000000" },
+          shapeProperties: {
+            useBorderWithImage: true,
+          },
+        },
+        edges: {
+          color: "lightgray",
+        },
+      };
+      network = new vis.Network(container, data, options);
+    }
+    
+    window.addEventListener("load", () => {
+      draw();
+    });
+        </script>
+    <div id="mynetwork" style="height: 600px;"></div>
+</body>
+</html>
